@@ -22,7 +22,7 @@ class Token
       right: { x: 1, y: 0, opposite: :left },
       down_right: { x: 1, y: -1, opposite: :up_left },
       down: { x: 0, y: -1, opposite: :up },
-      down_left: { x: -0, y: -1, opposite: :up_right },
+      down_left: { x: -1, y: -1, opposite: :up_right },
       left: { x: -1, y: 0, opposite: :right },
       up_left: { x: -1, y: 1, opposite: :down_right }
     }
@@ -92,7 +92,7 @@ class Token
   def neighbour_token(direction, positions)
     target_x = @position[:x] + direction[1][:x]
     target_y = @position[:y] + direction[1][:y]
-    return unless on_the_board?(target_x, target_y) && positions[target_x][target_y].nil? == false
+    return nil unless on_the_board?(target_x, target_y) && positions[target_x][target_y].nil? == false
 
     positions[target_x][target_y]
   end

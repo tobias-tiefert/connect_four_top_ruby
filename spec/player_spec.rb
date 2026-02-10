@@ -12,10 +12,16 @@ describe Player do
   let(:token) { double('token', color: 'blue') }
   describe '#next_move' do
     context 'when the player is asked for her next move' do
-      it 'calls drop_token on the board object' do
+      it 'returns the chosen colum' do
         allow(player).to receive(:gets).and_return('3')
-        allow(token).to receive(:new)
-        expect(board).to receive(:drop_token)
+        allow(board).to receive(:column_full?).and_return(false)
+        expect(player.next_move).to be 2
+      end
+      it 'displays an error message if the column is full' do
+        allow(player).to receive(:gets).and_return('3')
+        allow(board).to receive(:column_full?).and_return(true, false)
+        error_message = 'Please choose an available column'
+        expect(player).to receive(:puts).with(error_message).once
         player.next_move
       end
     end

@@ -5,7 +5,7 @@ require_relative 'token'
 
 # class that represents the players in the connect_four game
 class Player
-  attr_reader :name
+  attr_reader :name, :color
 
   def initialize(name, color, board)
     @name = name
@@ -14,9 +14,13 @@ class Player
   end
 
   def next_move
-    puts 'what column do you choose?'
-    column = gets.chomp
-    token = Token.new(@color)
-    @board.drop_token(token, column)
+    loop do
+      puts "#{@name} what column do you choose?"
+      column = gets.chomp.to_i - 1
+      puts column
+      return column unless column > 7 || @board.column_full?(column)
+
+      puts 'Please choose an available column'
+    end
   end
 end

@@ -79,14 +79,17 @@ describe Token do
 
   describe '#all_neighbours' do
     let(:neighbours_board) { double('board') }
+    subject(:all_neighbours_token) { described_class.new('purple') }
     before(:each) do
-      token.position = { x: 0, y: 0 }
+      all_neighbours_token.position = { x: 1, y: 1 }
       token_one = Token.new('green')
       token_two = Token.new('blue')
+      token_three = Token.new('yellow')
+      token_four = Token.new('red')
       board_positions = [
-        [token, token_one, nil, nil, nil, nil],
-        [token_two, nil, nil, nil, nil, nil],
         [nil, nil, nil, nil, nil, nil],
+        [token_three, all_neighbours_token, token_one, nil, nil, nil],
+        [token_four, token_two, nil, nil, nil, nil],
         [nil, nil, nil, nil, nil, nil],
         [nil, nil, nil, nil, nil, nil],
         [nil, nil, nil, nil, nil, nil],
@@ -94,39 +97,39 @@ describe Token do
       ]
       allow(neighbours_board).to receive(:positions).and_return(board_positions)
     end
-    it 'calls the neighbour method twice' do
-      expect(token).to receive(:neighbour).twice
-      token.all_neighbours(neighbours_board.positions)
+    it 'calls the neighbour method four times' do
+      expect(all_neighbours_token).to receive(:neighbour).exactly(4).times
+      all_neighbours_token.all_neighbours(neighbours_board.positions)
     end
     it 'updates the postion for the up neighbour' do
-      token.all_neighbours(neighbours_board.positions)
-      token_neighbours = token.instance_variable_get(:@neighbours)
+      all_neighbours_token.all_neighbours(neighbours_board.positions)
+      token_neighbours = all_neighbours_token.instance_variable_get(:@neighbours)
       expect(token_neighbours[:up]).to be_a_kind_of Token
     end
     it 'makes the up neighbour of color green' do
-      token.all_neighbours(neighbours_board.positions)
-      token_neighbours = token.instance_variable_get(:@neighbours)
+      all_neighbours_token.all_neighbours(neighbours_board.positions)
+      token_neighbours = all_neighbours_token.instance_variable_get(:@neighbours)
       expect(token_neighbours[:up].color).to be('green')
     end
-    it 'updates the postion for the right neighbour' do
-      token.all_neighbours(neighbours_board.positions)
-      token_neighbours = token.instance_variable_get(:@neighbours)
-      expect(token_neighbours[:right]).to be_a_kind_of Token
-    end
     it 'makes the right neighbour of color blue' do
-      token.all_neighbours(neighbours_board.positions)
-      token_neighbours = token.instance_variable_get(:@neighbours)
+      all_neighbours_token.all_neighbours(neighbours_board.positions)
+      token_neighbours = all_neighbours_token.instance_variable_get(:@neighbours)
       expect(token_neighbours[:right].color).to be('blue')
     end
+    it 'makes the down neighbour of color yellow' do
+      all_neighbours_token.all_neighbours(neighbours_board.positions)
+      token_neighbours = all_neighbours_token.instance_variable_get(:@neighbours)
+      expect(token_neighbours[:down].color).to be('yellow')
+    end
     it 'leaves the up_right neighbour nil' do
-      token.all_neighbours(neighbours_board.positions)
-      token_neighbours = token.instance_variable_get(:@neighbours)
+      all_neighbours_token.all_neighbours(neighbours_board.positions)
+      token_neighbours = all_neighbours_token.instance_variable_get(:@neighbours)
       expect(token_neighbours[:up_right]).to be nil
     end
     it "it changes the  up's neighbour's down neighbour to self" do
-      token.all_neighbours(neighbours_board.positions)
-      up_neighbour = token.instance_variable_get(:@neighbours)[:up]
-      expect(up_neighbour.neighbours[:down]).to be token
+      all_neighbours_token.all_neighbours(neighbours_board.positions)
+      up_neighbour = all_neighbours_token.instance_variable_get(:@neighbours)[:up]
+      expect(up_neighbour.neighbours[:down]).to be all_neighbours_token
     end
   end
 
@@ -231,7 +234,54 @@ describe Token do
                                      })
         expect(third.connect_four?).to be true
       end
-      it 'returns true for 4 in diagonale' do
+      it 'returns true for 4 in diagonale bottom left to top right' do
+        first.position = { x: 3, y: 0 }
+        second.position = { x: 2, y: 1 }
+        third.position = { x: 1, y: 2 }
+        fourth.position = { x: 0, y: 3 }
+        first.instance_variable_set(:@neighbours, {
+                                      up: nil,
+                                      up_right: second,
+                                      right: nil,
+                                      down_right: nil,
+                                      down: nil,
+                                      down_left: nil,
+                                      left: nil,
+                                      up_left: nil
+                                    })
+        second.instance_variable_set(:@neighbours, {
+                                       up: nil,
+                                       up_right: third,
+                                       right: nil,
+                                       down_right: nil,
+                                       down: nil,
+                                       down_left: first,
+                                       left: nil,
+                                       up_left: nil
+                                     })
+        third.instance_variable_set(:@neighbours, {
+                                      up: nil,
+                                      up_right: fourth,
+                                      right: nil,
+                                      down_right: nil,
+                                      down: nil,
+                                      down_left: second,
+                                      left: nil,
+                                      up_left: nil
+                                    })
+        fourth.instance_variable_set(:@neighbours, {
+                                       up: nil,
+                                       up_right: nil,
+                                       right: nil,
+                                       down_right: nil,
+                                       down: nil,
+                                       down_left: third,
+                                       left: nil,
+                                       up_left: nil
+                                     })
+        expect(third.connect_four?).to be true
+      end
+      it 'returns true for 4 in diagonale top left to bottom right' do
         first.position = { x: 0, y: 0 }
         second.position = { x: 1, y: 1 }
         third.position = { x: 2, y: 2 }

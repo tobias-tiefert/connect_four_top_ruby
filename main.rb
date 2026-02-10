@@ -1,8 +1,4 @@
-require_relative 'lib/token'
-require_relative 'lib/board'
-require_relative 'lib/player'
-
-board = Board.new
+require_relative 'lib/game'
 
 puts <<~HEREDOC
   Puts HEREDOC Board:
@@ -13,17 +9,5 @@ puts <<~HEREDOC
      \e[100m\e[30m ♞ \e[103m ♞ \e[100m ♘ \e[103m ♘ \e[100m \e[97m ♞ \e[103m\e[100m\e[103m  ♞  \e[0m
 HEREDOC
 
-puts 'drawn board'
-
-board.draw_board
-board.drop_token(Token.new('blue'), 4)
-board.drop_token(Token.new('yellow'), 4)
-board.drop_token(Token.new('blue'), 4)
-board.drop_token(Token.new('yellow'), 4)
-board.draw_board
-board.drop_token(Token.new('blue'), 4)
-board.drop_token(Token.new('yellow'), 4)
-board.drop_token(Token.new('blue'), 2)
-board.drop_token(Token.new('yellow'), 1)
-board.drop_token(Token.new('blue'), 2)
-board.draw_board
+game = Game.new
+game.start_game
