@@ -17,7 +17,6 @@ class Player
     loop do
       puts "#{@name} what column do you choose?"
       column = gets.chomp.to_i - 1
-      puts column
       return column unless column > 7 || @board.column_full?(column)
 
       puts 'Please choose an available column'

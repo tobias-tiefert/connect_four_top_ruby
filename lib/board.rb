@@ -2,12 +2,11 @@
 
 # class that represents the board in the connect_four game
 class Board
-  MAX_POSITIONS = 42
   COLUMNS = 7
   ROWS = 6
   SIGN_EMPTY = '◯'
 
-  attr_accessor :positions
+  attr_reader :positions
 
   def initialize
     @positions = initialize_positions
@@ -87,10 +86,8 @@ class Board
   end
 
   def draw_field(field)
-    if field.nil?
-      print "| #{SIGN_EMPTY} "
-    else
-      print "| #{field.sign} "
-    end
+    output = field.nil? ? "| #{SIGN_EMPTY} " : "| #{field.sign} "
+
+    print output
   end
 end

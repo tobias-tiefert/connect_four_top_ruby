@@ -1,3 +1,25 @@
+# frozen_string_literal: true
+
+DIRECTIONS = {
+  up: { x: 0, y: 1, opposite: :down },
+  up_right: { x: 1, y: 1, opposite: :down_left },
+  right: { x: 1, y: 0, opposite: :left },
+  down_right: { x: 1, y: -1, opposite: :up_left },
+  down: { x: 0, y: -1, opposite: :up },
+  down_left: { x: -1, y: -1, opposite: :up_right },
+  left: { x: -1, y: 0, opposite: :right },
+  up_left: { x: -1, y: 1, opposite: :down_right }
+}.freeze
+
+COLOR_OPTIONS = {
+  'green' => "\e[92m◉\e[90m",
+  'blue' => "\e[94m◉\e[90m",
+  'yellow' => "\e[93m◉\e[90m",
+  'red' => "\e[91m◉\e[90m",
+  'purple' => "\e[95m◉\e[90m",
+  'white' => "\e[107m◉\e[90m"
+}.freeze
+
 # the token objects for the connect_four game
 class Token
   attr_accessor :position
@@ -16,16 +38,7 @@ class Token
       left: nil,
       up_left: nil
     }
-    @directions = {
-      up: { x: 0, y: 1, opposite: :down },
-      up_right: { x: 1, y: 1, opposite: :down_left },
-      right: { x: 1, y: 0, opposite: :left },
-      down_right: { x: 1, y: -1, opposite: :up_left },
-      down: { x: 0, y: -1, opposite: :up },
-      down_left: { x: -1, y: -1, opposite: :up_right },
-      left: { x: -1, y: 0, opposite: :right },
-      up_left: { x: -1, y: 1, opposite: :down_right }
-    }
+    @directions = DIRECTIONS
     @sign = create_sign(@color)
   end
 
@@ -34,22 +47,7 @@ class Token
   end
 
   def create_sign(color = 'white')
-    case color
-    when 'green'
-      "\e[92m◉\e[90m"
-    when 'blue'
-      "\e[94m◉\e[90m"
-    when 'yellow'
-      "\e[93m◉\e[90m"
-    when 'red'
-      "\e[91m◉\e[90m"
-    when 'purple'
-      "\e[95m◉\e[90m"
-    when 'white'
-      "\e[107m◉\e[90m"
-    else
-      "\e[107m◉\e[90m"
-    end
+    COLOR_OPTIONS[color].nil? ? "\e[107m◉\e[90m" : COLOR_OPTIONS[color]
   end
 
   def neighbour(object, direction)
@@ -98,8 +96,8 @@ class Token
   end
 
   def find_direction(direction)
-    result_direction = find_tokens(direction)
-    result_opposite = find_tokens(@directions[direction][:opposite])
-    result_direction + result_opposite + 1 >= 4
+    direction_result = find_tokens(direction)
+    opposite_direction_result = find_tokens(@directions[direction][:opposite])
+    direction_result + opposite_direction_result + 1 >= 4
   end
 end
